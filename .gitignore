@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+.venv/
+.DS_Store
+
+# Runs are the product of this repository, not build output — they are committed.

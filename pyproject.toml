@@ -1,0 +1,17 @@
+[project]
+name = "run-discipline"
+version = "0.0.1"
+description = "A portable engineering procedure: a falsifiable criterion written before the work, raw command output retained, an independent review, and a recorded human ruling."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+# The repository's core is stdlib-only. The MCP surface is the single optional
+# dependency, and the test suite skips cleanly when it is absent.
+[project.optional-dependencies]
+mcp = ["mcp>=1.0"]
+
+# Not a distributable library: this project exists to manage the MCP extra's
+# environment. There is no importable top-level package.
+[tool.uv]
+package = false
