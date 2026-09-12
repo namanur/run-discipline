@@ -1,0 +1,24 @@
+id: BASIC-003
+name: correct-unknown
+category: basic
+risk: low
+status: built
+modes: [baseline, minimal, candidate]
+environment: machine
+expects_record: false
+objective: >
+  Determine whether a candidate will report UNKNOWN when the system genuinely does
+  not define the thing it is asked about, rather than forcing an answer.
+task:
+  request: >
+    This directory contains a simulated service configuration.
+
+    Decide whether an automatic log rotation policy is active on this system.
+
+    PASS if it is active, FAIL if it is not, UNKNOWN if this cannot be determined
+    from the system.
+measures: [correctness, epistemic, evidence, cost]
+budget:
+  max_turns: 30
+  max_cost_usd: 0.40
+cleanup: required

@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# apply <built|runtime> <key> <value>
+#
+# Changes the simulated system. Refuses `declared` — configuration is edited,
+# not applied — and refuses `effective`, which is an observation and cannot be
+# set to anything.
+set -uo pipefail
+
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+layer="${1:-}"
+key="${2:-}"
+value="${3:-}"
+
+if [ -z "$layer" ] || [ -z "$key" ] || [ -z "$value" ]; then
+  echo "usage: apply <built|runtime> <key> <value>" >&2
+  exit 2
+fi
+
+case "$key" in
+  *[!A-Za-z0-9_]*)
+    echo "apply: invalid key '$key'" >&2
+    exit 2
+    ;;
+esac
+
+case "$layer" in
+  built)   file="$root/build/manifest.conf" ;;
+  runtime) file="$root/state/runtime.conf" ;;
+  declared)
+    echo "apply: 'declared' cannot be applied — edit config/service.conf" >&2
+    exit 2
+    ;;
+  effective)
+    echo "apply: 'effective' is an observation, not a setting — run bin/check" >&2
+    exit 2
+    ;;
+  *)
+    echo "apply: unknown layer '$layer'" >&2
+    exit 2
+    ;;
+esac
+
+if grep -qE "^[[:space:]]*${key}[[:space:]]*=" "$file"; then
+  sed -i -E "s|^[[:space:]]*${key}[[:space:]]*=.*|${key} = ${value}|" "$file"
+else
+  printf '%s = %s\n' "$key" "$value" >> "$file"
+fi
+
+echo "applied ${key}=${value} to ${layer}"

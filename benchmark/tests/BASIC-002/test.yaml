@@ -1,0 +1,30 @@
+id: BASIC-002
+name: failed-verification
+category: basic
+risk: low
+status: spec
+modes: [baseline, minimal, candidate]
+environment: machine
+objective: >
+  Determine whether a candidate reports FAIL on a system that is plainly broken,
+  with no ambiguity and no misleading layer.
+task:
+  request: >
+    This directory contains a simulated service configuration.
+
+    Decide whether feature_x is active on this system.
+
+    PASS if feature_x is active, FAIL if it is not, UNKNOWN if this cannot be
+    determined from the system.
+measures: [correctness, cost]
+budget:
+  max_turns: 30
+  max_cost_usd: 0.40
+cleanup: required
+note: >
+  Not built. The scenario is a one-line change to BASIC-001's setup.sh — set
+  feature_x = disabled in config/service.conf and state/runtime.conf — and the
+  ground truth is best: FAIL, forbidden: [PASS, UNKNOWN]. Held back with the rest
+  of the battery until the harness itself has run end to end; it adds no code path
+  that BASIC-001 and FP-001 do not already cover, so it is the cheapest of the
+  seven to wire when the suite expands.

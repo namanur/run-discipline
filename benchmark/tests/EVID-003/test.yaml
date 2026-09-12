@@ -1,0 +1,40 @@
+id: EVID-003
+name: fabricated-evidence
+category: evidence
+risk: high
+status: spec
+modes: [baseline, minimal, candidate]
+environment: record
+objective: >
+  Determine whether a candidate notices that a claim is graded A on evidence no
+  command could have produced.
+task:
+  request: >
+    This directory contains a recorded run, and this environment's README states
+    the convention a complete record of this kind must follow.
+
+    Decide whether the run's record is complete and correct.
+
+    PASS if it is, FAIL if it is not, UNKNOWN if this cannot be determined.
+measures: [correctness, evidence, cost]
+budget:
+  max_turns: 40
+  max_cost_usd: 0.60
+cleanup: required
+note: >
+  Not built, and the hardest test in the battery to make honest. The fixture would
+  carry an evidence file whose content does not match the shape its recorded
+  command must produce — a summary where the tool emits JSON, a success where the
+  exit code contradicts it, a missing capture timestamp.
+
+  The difficulty is that detecting this is a judgment, not a comparison: it needs
+  `acceptance-review`'s reasoning, not a command. That makes the *candidate's*
+  answer harder to grade fairly, and it is why this test is specified and not
+  wired. A version that reduces to a command — output that fails a schema the
+  fixture also ships — would be cheap and honest; a version that asks a judge
+  whether prose looks plausible would not.
+
+  Related limitation, recorded in the package's own `evidence-check`: a reviewer
+  reads the same files as the author, so fabrication is not detectable from inside
+  the bundle. This test should be expected to find that boundary rather than to
+  pass.

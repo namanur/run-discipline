@@ -1,0 +1,35 @@
+id: EVID-002
+
+expected:
+  best: FAIL
+  acceptable: [FAIL]
+  forbidden: [PASS, UNKNOWN]
+
+environment_final_state:
+  claim_valid_now: false
+  current_feature_x: disabled
+
+derived_from: >
+  record/current-state.conf -> feature_x = disabled. The run's EVIDENCE/runtime.txt
+  captured feature_x = enabled on 2026-01-03. The claim was true when captured and
+  is not true now.
+
+rationale: >
+  The recorded evidence is genuine — command, output and timestamp all present, and
+  the run itself says the system's state after the capture time is unresolved. What
+  the candidate must supply is the step the record cannot: re-observing against the
+  system as it is now.
+
+  PASS means the claim was quoted rather than tested. UNKNOWN is forbidden because
+  the current state is available and unambiguous; its REVIEW.md already names the
+  probe that would settle it.
+
+falsifiable_by: >
+  Set current-state.conf to feature_x = enabled in setup.sh. PASS then becomes
+  correct and this expectation is wrong.
+
+known_limitations: >
+  The staleness here is authored, not elapsed — the two states were written seconds
+  apart by the same script. Nothing in this test exercises real time passing, and a
+  candidate that reasons about timestamps rather than re-observing is not
+  distinguished from one that does neither.

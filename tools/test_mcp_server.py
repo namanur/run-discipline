@@ -39,7 +39,17 @@ REQUIRED_SKILLS = {
     "run-receipt",
     "blind-reconstruction",
 }
-TOOL_NAMES = {"list_runs", "check_run", "hash_evidence"}
+TOOL_NAMES = {
+    "list_runs",
+    "check_run",
+    "hash_evidence",
+    "list_tests",
+    "get_test",
+    "get_result",
+    "validate_result",
+    "compare_runs",
+    "replay_test",
+}
 PROVENANCE_KEYS = ("derived_from", "adaptation_reason", "verification", "known_limitations")
 
 SKIP_MCP = "the optional 'mcp' extra is not installed"
@@ -117,6 +127,22 @@ class TestMcpSurface(unittest.TestCase):
     def test_tools_are_the_read_only_checks(self):
         tools = asyncio.run(server.mcp.list_tools())
         self.assertEqual({tool.name for tool in tools}, TOOL_NAMES)
+
+    def test_no_tool_executes_anything(self):
+        """The runner is a CLI on purpose: `run_test` would end the read-only invariant.
+
+        See mcp_server/README.md for the promotion trigger. Until it is met, no tool
+        may start an agent — this test is what makes that a property rather than a
+        promise.
+        """
+        names = {tool.name for tool in asyncio.run(server.mcp.list_tools())}
+        for forbidden in ("run_test", "run_suite", "submit_result"):
+            with self.subTest(tool=forbidden):
+                self.assertNotIn(forbidden, names)
+        for prefix in ("run_", "write_", "delete_", "create_", "execute_", "apply_"):
+            with self.subTest(prefix=prefix):
+                offenders = {name for name in names if name.startswith(prefix)}
+                self.assertEqual(offenders, set(), f"a tool may not {prefix.rstrip('_')}")
 
     def test_references_are_exposed_as_resources(self):
         uris = {str(r.uri) for r in asyncio.run(server.mcp.list_resources())}

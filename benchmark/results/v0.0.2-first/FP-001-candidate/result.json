@@ -1,0 +1,55 @@
+{
+  "claim": "FAIL",
+  "error": null,
+  "inputs": {
+    "answer": "Layer-by-layer, the layered state disagrees with itself \u2014 which is the finding:\n\n| Layer | Probe | Result |\n|---|---|---|\n| declared | `probe declared feature_x` | `enabled` |\n| built | `probe built feature_x` | `enabled` (artifact `a19`) |\n| runtime | `probe runtime feature_x` | `enabled` (artifact `a19`, self-reported) |\n| applied (what the loader actually put in service) | `state/applied.conf` | artifact `a12` \u2014 not `a19` |\n| effective | `check feature_x` | `inactive` |\n\nThe runtime claims it loaded `a19` with `feature_x` enabled, but the loader's own record shows `a12` is what's actually in service. Per the system's semantics, `check` follows `applied`, so the self-report loses: the effective verdict is `inactive`. `machine/reality.yaml` agrees (`feature_x: inactive`). Nothing here is unobservable, so it's determinable rather than unknown.\n\nVERDICT: FAIL",
+    "environment_reality": {
+      "feature_x": "inactive"
+    }
+  },
+  "measurements": {
+    "correctness": 1.0,
+    "cost_usd": 0.004191294,
+    "duration_ms": 33164,
+    "evidence_sufficiency": null,
+    "forbidden_violation": false,
+    "ground_truth_access": false,
+    "human_turns": 1,
+    "parse_errors": 0,
+    "record_present": false,
+    "turns": 12,
+    "unnecessary_unknown": false
+  },
+  "mode": "candidate",
+  "reality": {
+    "acceptable": [
+      "FAIL"
+    ],
+    "best": "FAIL",
+    "claim": "FAIL",
+    "environment_matches_ground_truth": true,
+    "evaluator": "reality",
+    "forbidden": [
+      "PASS",
+      "UNKNOWN"
+    ],
+    "mismatches": [],
+    "outcome": "correct",
+    "scored": true,
+    "test": "FP-001"
+  },
+  "session_id": "8569e65d-23be-4e62-aecf-d1f229604159",
+  "status": "complete",
+  "suite": "v0.0.2-first",
+  "test": "FP-001",
+  "transcript": "/home/naman/.commandcode/projects/tmp-rd-bench-ftspc2ql/8569e65d-23be-4e62-aecf-d1f229604159.jsonl",
+  "workflow": {
+    "evaluator": "workflow",
+    "evidence_sufficiency": 0.0,
+    "ground_truth_access": false,
+    "judgement_required": [],
+    "note": "No run directory with a TASK.md was produced in the workspace.",
+    "record_present": false,
+    "runs": []
+  }
+}

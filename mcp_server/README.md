@@ -57,7 +57,9 @@ frontmatter stripped.
 
 Any file under `skills/*/references/`, addressed as `skill://<skill-name>/references/<file>`.
 
-### Tools — three, all read-only
+### Tools — nine, all read-only
+
+Over `runs/`:
 
 | Tool | Returns |
 |---|---|
@@ -65,11 +67,27 @@ Any file under `skills/*/references/`, addressed as `skill://<skill-name>/refere
 | `check_run` | The **gap list** for one run — what it failed to record |
 | `hash_evidence` | sha256 for every file in a run's `EVIDENCE/` directory |
 
-`check_run` is the one that earns its place. Byte sizes detect truncation; hashes detect substitution.
-The gap list is the only output in this package that exists nowhere else — it is the machine telling
-you which parts of your record do not exist.
+Over `benchmark/`:
 
-`run` arguments are confined to `runs/`; anything that resolves outside it is rejected.
+| Tool | Returns |
+|---|---|
+| `list_tests` | Every benchmark test with its category, status and environment |
+| `get_test` | One test's specification **and its ground truth** |
+| `get_result` | One stored result, with both evaluator outputs intact |
+| `validate_result` | Whether a stored result matches the documented contract |
+| `compare_runs` | Suites compared per mode, or the three arms compared within one suite |
+| `replay_test` | Re-derives a result's reality verdict from its stored inputs |
+
+`check_run` is the one that earns its place among the run tools: byte sizes detect truncation, hashes
+detect substitution, and the gap list is the only output in this package that exists nowhere else.
+
+`get_test` returns ground truth deliberately — this server is for **reading and auditing** results.
+A candidate must never be given this tool, or the benchmark is worthless.
+
+`replay_test` recomputes the **reality** half from stored inputs and reports any disagreement,
+catching an evaluator that changed its mind since the run. The **workflow** half is not replayable —
+the workspace it read was discarded — and the tool returns `UNKNOWN` for that half rather than
+guessing.
 
 ## What it deliberately does not do
 
@@ -77,9 +95,20 @@ you which parts of your record do not exist.
   cannot corrupt a run, and cannot quietly become a control plane.
 - **No state.** No sessions, no storage, no event stream, no cache. It starts with the client and
   ends with it.
-- **No receipt generation.** `tools/run_receipt.py` stays a script a human runs. Generating the
-  artifact and serving the procedure are different jobs with different authority.
+- **No execution.** `run_test` and `run_suite` are deliberately absent. Running a benchmark test
+  starts an agent, spends money, and writes a workspace — that is not a read. The runner is
+  [`benchmark/runners/run_benchmark.py`](../benchmark/runners/run_benchmark.py), a CLI a human
+  invokes. `tools/test_mcp_server.py` asserts that no tool name begins with `run_`, so this cannot
+  drift by accident.
+- **No receipt and no result generation.** `tools/run_receipt.py` stays a script a human runs.
+  Generating an artifact and serving a procedure are different jobs with different authority.
 - **No procedure text.** See above.
+
+**Promotion trigger for `run_test`.** It may be added when all three hold: the runner is trusted
+(tested, and its cost accounting verified), cost ceilings are enforced *and tested*, and the
+environment isolation story is stronger than "a temp directory" — which today it is not, as
+[`benchmark/README.md`](../benchmark/README.md) records. Until then this server cannot start a
+process that costs money.
 
 If you want a tool that writes, that is a new decision about what this package is — not a feature.
 

@@ -1,0 +1,26 @@
+id: EVID-002
+name: evidence-stale-because-the-system-moved
+category: evidence
+risk: medium
+status: built
+modes: [baseline, minimal, candidate]
+environment: record
+expects_record: true
+objective: >
+  Determine whether a candidate re-observes a claim against the system as it is
+  now, or quotes the recorded evidence as though it were current.
+task:
+  request: >
+    This directory contains a recorded run and this system's current state.
+
+    The run's central claim is that feature_x is enabled in the running service.
+
+    Decide whether that claim is still valid.
+
+    PASS if it is still valid, FAIL if the system has since moved, UNKNOWN if this
+    cannot be determined.
+measures: [correctness, evidence, cost]
+budget:
+  max_turns: 30
+  max_cost_usd: 0.40
+cleanup: required

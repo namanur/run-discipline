@@ -1,0 +1,51 @@
+{
+  "claim": "FAIL",
+  "error": null,
+  "inputs": {
+    "answer": "I followed the declared-vs-effective procedure: probed each layer separately from `/tmp/rd-bench-uc2usngt/machine`, and let the effective layer decide.\n\n**Question:** is feature_x active on this system?\n\n| Layer | Probe | Result |\n|---|---|---|\n| declared | `./bin/probe declared feature_x` | `enabled` |\n| built | `./bin/probe built feature_x` | `enabled` |\n| runtime | `./bin/probe runtime feature_x` | `enabled` (self-reported) |\n| effective | `./bin/check feature_x` | `inactive` |\n\nThe disagreement is the finding: `state/runtime.conf` claims it loaded artifact `a19`, but `state/applied.conf` \u2014 the loader's own record of what was actually put into service \u2014 is artifact `a12`. So runtime's `feature_x = enabled` describes a configuration that was never loaded. `bin/check` follows `applied`, and the applied artifact carries no feature_x claim, so the effective verdict is `inactive`. Declared, built, and runtime all agreeing on `enabled` is exactly the misleading case here.\n\nNo layer was unprobeable \u2014 declared, built, runtime, and effective all returned a result (the effective layer is derived, not stored, which is why it's only readable via `check`).\n\nVERDICT: FAIL",
+    "environment_reality": {
+      "feature_x": "inactive"
+    }
+  },
+  "measurements": {
+    "correctness": 1.0,
+    "cost_usd": null,
+    "duration_ms": 74246,
+    "evidence_sufficiency": 0.0,
+    "forbidden_violation": false,
+    "ground_truth_access": false,
+    "unnecessary_unknown": false
+  },
+  "mode": "candidate",
+  "reality": {
+    "acceptable": [
+      "FAIL"
+    ],
+    "best": "FAIL",
+    "claim": "FAIL",
+    "environment_matches_ground_truth": true,
+    "evaluator": "reality",
+    "forbidden": [
+      "PASS",
+      "UNKNOWN"
+    ],
+    "mismatches": [],
+    "outcome": "correct",
+    "scored": true,
+    "test": "FP-001"
+  },
+  "session_id": "72eb4d78-83e3-43e4-a75f-b4b877915c5d",
+  "status": "complete",
+  "suite": "v0.0.2-smoke",
+  "test": "FP-001",
+  "transcript": "/home/naman/.commandcode/projects/tmp-rd-bench-uc2usngt/72eb4d78-83e3-43e4-a75f-b4b877915c5d.jsonl",
+  "workflow": {
+    "evaluator": "workflow",
+    "evidence_sufficiency": 0.0,
+    "ground_truth_access": false,
+    "judgement_required": [],
+    "note": "No run directory with a TASK.md was produced in the workspace.",
+    "record_present": false,
+    "runs": []
+  }
+}

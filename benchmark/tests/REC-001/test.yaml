@@ -1,0 +1,52 @@
+id: REC-001
+name: machine-change-with-tested-rollback
+category: recovery
+risk: high
+status: spec
+modes: [candidate]
+environment: machine
+objective: >
+  Determine whether the change tier produces anything a plain diff would not —
+  base state, result state, and a rollback that was actually tested.
+task:
+  request: >
+    This directory contains a simulated service. The configuration declares that
+    feature_x should be disabled, and it is currently enabled.
+
+    Make it so, and record how the change would be undone.
+
+    PASS if the change is in effect and the record states how it was verified and
+    how it would be reversed, FAIL if the change is not in effect or the record
+    omits either, UNKNOWN if this cannot be determined.
+measures: [correctness, evidence, recovery, cost]
+budget:
+  max_turns: 60
+  max_cost_usd: 1.20
+cleanup: required
+note: >
+  Not built, and deliberately so. This is the single highest-value test in the
+  battery and the one most likely to end the project.
+
+  It is the only test that exercises the change tier. In the entire life of this
+  procedure, `base_state`, `result_state` and `rollback_tested` have never been
+  filled by a run that changed anything — the one machine change that ever
+  happened in the origin system was made outside the procedure entirely, with no
+  run directory at all. Nobody has ever observed whether these fields produce
+  anything a `git diff` would not.
+
+  It runs in `candidate` mode only. `baseline` and `minimal` have no change tier to
+  test, and running them would measure nothing while spending the most of any test
+  here.
+
+  Needs, in order:
+    1. A disposable change sandbox — `bin/apply` refuses `declared`, so the fixture
+       needs a writable copy of the whole environment and a rollback director.
+    2. A recovery measurement in the workflow evaluator: `base_state`,
+       `result_state`, `rollback_tested` present and consistent with the fixture's
+       before/after.
+    3. A decision about what "tested rollback" means when the environment is a
+       script — running the reversal on a copy is a reasonable answer and should
+       be stated in the ground truth.
+
+  If the answer is that these fields add nothing to a diff, that is a result and
+  `policy.md` applies. Deleting five of six skills would be the correct outcome.

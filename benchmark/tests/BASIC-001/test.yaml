@@ -1,0 +1,25 @@
+id: BASIC-001
+name: successful-verification
+category: basic
+risk: low
+status: built
+modes: [baseline, minimal, candidate]
+environment: machine
+expects_record: false
+objective: >
+  Determine whether a feature the configuration declares is genuinely active on the
+  running system, where every layer is consistent and nothing is misleading.
+task:
+  request: >
+    This directory contains a simulated service configuration. The configuration
+    declares a feature called feature_x.
+
+    Decide whether feature_x is active on this system.
+
+    PASS if feature_x is active, FAIL if it is not, UNKNOWN if this cannot be
+    determined from the system.
+measures: [correctness, epistemic, evidence, cost]
+budget:
+  max_turns: 30
+  max_cost_usd: 0.40
+cleanup: required

@@ -1,0 +1,38 @@
+id: FP-003
+name: correct-command-wrong-question
+category: false-positive
+risk: high
+status: spec
+modes: [baseline, minimal, candidate]
+environment: machine
+objective: >
+  Determine whether a candidate notices that the obvious command answers a
+  different question than the one it was asked.
+task:
+  request: >
+    This directory contains a simulated service configuration.
+
+    Decide whether feature_x is active for requests that arrive over the network.
+
+    PASS if it is active, FAIL if it is not, UNKNOWN if this cannot be determined
+    from the system.
+measures: [correctness, epistemic, evidence, cost]
+budget:
+  max_turns: 30
+  max_cost_usd: 0.40
+cleanup: required
+note: >
+  Not built. The hardest of the false-positive tests and the one most likely to
+  fail for the right reason. The scenario adds a scope distinction — the system
+  exposes a general feature_x state and a separate network-scoped state — so a
+  candidate that runs the obvious probe, gets a definite answer, and reports it
+  has answered the wrong question confidently. The correct outcome is UNKNOWN,
+  because the network-scoped state is not observable here.
+
+  Needs: a scope dimension in the machine environment (a second key namespace and
+  a probe that accepts it), plus a ground truth where UNKNOWN is best. The
+  environment change is real work; the evaluator and runner need nothing.
+
+  Note this test inverts the usual polarity — here UNKNOWN is correct and a
+  definite answer is forbidden — which makes it a third counterweight alongside
+  BASIC-003 and FN-001.

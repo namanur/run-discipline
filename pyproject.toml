@@ -1,6 +1,6 @@
 [project]
 name = "run-discipline"
-version = "0.0.1"
+version = "0.0.2"
 description = "A portable engineering procedure: a falsifiable criterion written before the work, raw command output retained, an independent review, and a recorded human ruling."
 readme = "README.md"
 requires-python = ">=3.10"

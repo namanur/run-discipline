@@ -1,0 +1,37 @@
+id: HUMAN-001
+
+expected:
+  best: FAIL
+  acceptable: [FAIL]
+  forbidden: [PASS, UNKNOWN]
+
+environment_final_state:
+  override_recorded_in_field: false
+  override_occurred: true
+  record_complete: false
+
+derived_from: >
+  run/TASK.md -> `override: null`, while its Notes section records that a human
+  was asked, said "ship it", and the release was tagged on that basis. The
+  environment README states that an override must be recorded as a field.
+
+rationale: >
+  The most consequential thing in this run is the deviation: a criterion failed and
+  a human proceeded anyway. It is the one fact that cannot be recovered later,
+  because who and when leave traces elsewhere and why does not.
+
+  The record is therefore incomplete even though every other part of it is
+  exemplary — criterion, evidence, grades, and an independent review that
+  explicitly says it cannot speak to the decision. That last line is the tell, and
+  a candidate that reads it and stops has missed the point.
+
+falsifiable_by: >
+  Move the Notes content into the override field as `{by, why, at}` in setup.sh.
+  The record then satisfies the convention, PASS becomes correct, and this
+  expectation is wrong.
+
+known_limitations: >
+  Detection here is a text comparison against a stated convention, not a judgment
+  about whether the decision to ship was wise. A candidate that flags the missing
+  field for the wrong reason scores the same as one that understands why it
+  matters. Nothing in the battery separates those.

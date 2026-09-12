@@ -4,3 +4,6 @@ __pycache__/
 .DS_Store
 
 # Runs are the product of this repository, not build output — they are committed.
+# Benchmark workspaces are scratch: they are copied in, run against, and discarded.
+benchmark/.workspaces/
+benchmark/results/**/workspace/

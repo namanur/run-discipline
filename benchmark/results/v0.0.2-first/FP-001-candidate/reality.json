@@ -1,0 +1,17 @@
+{
+  "acceptable": [
+    "FAIL"
+  ],
+  "best": "FAIL",
+  "claim": "FAIL",
+  "environment_matches_ground_truth": true,
+  "evaluator": "reality",
+  "forbidden": [
+    "PASS",
+    "UNKNOWN"
+  ],
+  "mismatches": [],
+  "outcome": "correct",
+  "scored": true,
+  "test": "FP-001"
+}

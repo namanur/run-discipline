@@ -1,0 +1,9 @@
+{
+  "evaluator": "workflow",
+  "evidence_sufficiency": 0.0,
+  "ground_truth_access": false,
+  "judgement_required": [],
+  "note": "No run directory with a TASK.md was produced in the workspace.",
+  "record_present": false,
+  "runs": []
+}

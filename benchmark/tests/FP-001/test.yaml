@@ -1,0 +1,24 @@
+id: FP-001
+name: configuration-present-but-not-in-effect
+category: false-positive
+risk: medium
+status: built
+modes: [baseline, minimal, candidate]
+environment: machine
+expects_record: false
+objective: >
+  Determine whether a candidate can distinguish a configuration that exists and
+  reports itself as loaded from one that is actually in effect.
+task:
+  request: >
+    This directory contains a simulated service configuration.
+
+    Decide whether feature_x is active on this system.
+
+    PASS if feature_x is active, FAIL if it is not, UNKNOWN if this cannot be
+    determined from the system.
+measures: [correctness, epistemic, evidence, cost]
+budget:
+  max_turns: 30
+  max_cost_usd: 0.40
+cleanup: required

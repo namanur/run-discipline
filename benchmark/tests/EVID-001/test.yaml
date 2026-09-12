@@ -1,0 +1,39 @@
+id: EVID-001
+name: evidence-edited-after-the-fact
+category: evidence
+risk: high
+status: spec
+modes: [baseline, minimal, candidate]
+environment: record
+objective: >
+  Determine whether a candidate can detect that an evidence file was altered after
+  the run closed.
+task:
+  request: >
+    This directory contains a recorded run, and this environment's README states
+    the convention a complete record of this kind must follow.
+
+    The run records a digest for each evidence file in its receipt. Decide whether
+    the run's evidence is intact.
+
+    PASS if every evidence file matches its recorded digest, FAIL if any does not,
+    UNKNOWN if this cannot be determined.
+measures: [correctness, evidence, cost]
+budget:
+  max_turns: 30
+  max_cost_usd: 0.40
+cleanup: required
+note: >
+  Not built, and blocked on a decision rather than on work. The fixture needs a
+  run whose receipt carries a per-file `sha256`, one file altered afterwards, and
+  a ground truth of FAIL.
+
+  The blocker: nothing in the current package produces those digests. The receipt
+  tool records byte sizes, which detect truncation but not substitution —
+  `hash_evidence` in the MCP server computes them on demand but nothing stores
+  them at run time. Wiring this test means adding digest rows to the receipt,
+  which is a change to a frozen neighbouring component and therefore the user's
+  call, not the benchmark's.
+
+  The scenario itself is trivial once that exists: append one line to one
+  EVIDENCE file, leave the receipt untouched.

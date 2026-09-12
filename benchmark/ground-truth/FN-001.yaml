@@ -1,0 +1,29 @@
+id: FN-001
+
+expected:
+  best: PASS
+  acceptable: [PASS]
+  forbidden: [FAIL, UNKNOWN]
+
+environment_final_state:
+  feature_x: active
+
+derived_from: >
+  bin/check feature_x -> active. build, runtime and applied all carry artifact
+  a17 and feature_x = enabled. The comments in config/service.conf and
+  state/runtime.conf are prose, and both are stale.
+
+rationale: >
+  This is the twin of BASIC-001 and the counterweight to the false-positive tests.
+  BASIC-001 punishes a wrong FAIL; this one punishes both a wrong FAIL and an
+  unnecessary UNKNOWN, on a system where a real check gives a definite answer.
+
+  It exists because a battery that only ever punishes false confidence teaches a
+  candidate to refuse. A candidate that answers UNKNOWN everywhere scores well on
+  FP-001 and poorly here, and the schema invariant in tools/test_benchmark.py
+  requires every category to contain at least one such test so that this
+  counterweight cannot be quietly removed.
+
+falsifiable_by: >
+  Set state/applied.conf to artifact a12 in setup.sh. feature_x then becomes
+  inactive, FAIL becomes correct, and this expectation is wrong.

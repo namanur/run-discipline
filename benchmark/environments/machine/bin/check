@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# check <feature>
+#
+# Reports the EFFECTIVE layer for a feature: active | inactive | unknown.
+#
+# Derived, not stored. A feature is active only when the artifact the loader
+# actually applied is the artifact the runtime reports, and the feature is
+# enabled there. A process that reports a configuration it never loaded is the
+# classic case: `probe runtime` says enabled and this says inactive.
+#
+# `unknown` means the feature is not configured at all. That is a fact about the
+# system, not an error.
+set -uo pipefail
+
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+feature="${1:-}"
+
+if [ -z "$feature" ]; then
+  echo "usage: check <feature>" >&2
+  exit 2
+fi
+
+read_key() {
+  awk -v key="$2" '
+    /^[[:space:]]*#/ { next }
+    {
+      eq = index($0, "=")
+      if (eq == 0) next
+      name = substr($0, 1, eq - 1); gsub(/^[[:space:]]+|[[:space:]]+$/, "", name)
+      val  = substr($0, eq + 1);    gsub(/^[[:space:]]+|[[:space:]]+$/, "", val)
+      if (name == key) { print val; found = 1; exit }
+    }
+    END { if (!found) print "" }
+  ' "$1"
+}
+
+if [ -z "$(read_key "$root/config/service.conf" "$feature")" ]; then
+  echo "unknown"
+  exit 0
+fi
+
+runtime_artifact="$(read_key "$root/state/runtime.conf" artifact)"
+applied_artifact="$(read_key "$root/state/applied.conf" artifact)"
+runtime_feature="$(read_key "$root/state/runtime.conf" "$feature")"
+
+if [ -z "$applied_artifact" ] \
+   || [ "$runtime_artifact" != "$applied_artifact" ] \
+   || [ "$runtime_feature" != "enabled" ]; then
+  echo "inactive"
+else
+  echo "active"
+fi

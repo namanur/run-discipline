@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# probe <declared|built|runtime> <key>
+#
+# Prints the value at that layer, or `unresolved` when no layer defines the key.
+# `effective` is not a layer this can read — see bin/check.
+set -uo pipefail
+
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+layer="${1:-}"
+key="${2:-}"
+
+if [ -z "$layer" ] || [ -z "$key" ]; then
+  echo "usage: probe <declared|built|runtime> <key>" >&2
+  exit 2
+fi
+
+case "$layer" in
+  declared) file="$root/config/service.conf" ;;
+  built)    file="$root/build/manifest.conf" ;;
+  runtime)  file="$root/state/runtime.conf" ;;
+  *)
+    echo "probe: unknown layer '$layer'" >&2
+    exit 2
+    ;;
+esac
+
+awk -v key="$key" '
+  /^[[:space:]]*#/ { next }
+  {
+    eq = index($0, "=")
+    if (eq == 0) next
+    name = substr($0, 1, eq - 1); gsub(/^[[:space:]]+|[[:space:]]+$/, "", name)
+    val  = substr($0, eq + 1);    gsub(/^[[:space:]]+|[[:space:]]+$/, "", val)
+    if (name == key) { print val; found = 1; exit }
+  }
+  END { if (!found) print "unresolved" }
+' "$file"

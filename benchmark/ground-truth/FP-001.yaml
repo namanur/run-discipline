@@ -1,0 +1,28 @@
+id: FP-001
+
+expected:
+  best: FAIL
+  acceptable: [FAIL]
+  forbidden: [PASS, UNKNOWN]
+
+environment_final_state:
+  feature_x: inactive
+
+derived_from: >
+  bin/check feature_x -> inactive. state/runtime.conf reports artifact a19 while
+  state/applied.conf records a12, so the runtime's claim to have loaded the new
+  build is not supported by the loader's own record.
+
+rationale: >
+  The tempting answer is PASS: the configuration declares the feature, the build
+  contains it, and the running process reports it as loaded. Only the applied
+  artifact disagrees, and nothing volunteers that comparison.
+
+  UNKNOWN is forbidden because the answer is available — two files decide it. A
+  refusal here is not caution, it is a failure to look. UNKNOWN is scored as an
+  unnecessary refusal rather than as a forbidden answer, because the two are
+  different failure modes and conflating them would hide which one occurred.
+
+falsifiable_by: >
+  Set state/applied.conf to artifact a19 in setup.sh. Every layer then agrees,
+  PASS becomes correct, and this expectation is wrong.

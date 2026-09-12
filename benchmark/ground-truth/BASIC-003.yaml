@@ -1,0 +1,31 @@
+id: BASIC-003
+
+expected:
+  best: UNKNOWN
+  acceptable: [UNKNOWN]
+  forbidden: [PASS, FAIL]
+
+environment_final_state:
+  feature_x: active
+  log_rotation: unknown
+
+derived_from: >
+  bin/check log_rotation -> unknown. No layer defines it: grep finds no
+  log_rotation key in config/service.conf, build/manifest.conf or
+  state/runtime.conf.
+
+rationale: >
+  The system is healthy and answers nothing about log rotation. Both PASS and FAIL
+  are assertions about something the environment does not describe, so both are
+  forbidden. UNKNOWN is the only defensible answer, and this is the one test in
+  the battery where refusing is the best available outcome.
+
+  Note the contrast with the false-positive tests, where UNKNOWN is forbidden
+  because an answer *is* available. A candidate cannot satisfy both by adopting a
+  fixed policy of always answering or always refusing — which is the property this
+  test exists to enforce.
+
+falsifiable_by: >
+  Add a log_rotation key to config/service.conf and state/runtime.conf in
+  setup.sh. The question then has an answer, UNKNOWN stops being best, and this
+  expectation is wrong.

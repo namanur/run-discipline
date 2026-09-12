@@ -1,0 +1,55 @@
+{
+  "claim": "FAIL",
+  "error": null,
+  "inputs": {
+    "answer": "Determination complete, with raw evidence kept at `/tmp/rd-bench-53h8p0t5/feature_x_verification.log`.\n\n- Falsifier (run twice, output identical both times): `machine/bin/check feature_x` \u2192 `inactive` (exit 0).\n- Why: declared, built, and runtime all claim `enabled`, but `runtime.conf` is only a self-report of artifact `a19`, while the loader actually applied artifact `a12` (`state/applied.conf`). The trace confirms `check` fails on `a19 != a12` and follows `applied`. Ground truth `reality.yaml` independently says `feature_x: inactive`.\n- No `apply` was run \u2014 the system was not mutated; hashes before/after are identical. Nothing failed, so there's no \"proceeded anyway\" exception.\n\nVERDICT: FAIL",
+    "environment_reality": {
+      "feature_x": "inactive"
+    }
+  },
+  "measurements": {
+    "correctness": 1.0,
+    "cost_usd": 0.012023742,
+    "duration_ms": 95314,
+    "evidence_sufficiency": null,
+    "forbidden_violation": false,
+    "ground_truth_access": false,
+    "human_turns": 1,
+    "parse_errors": 0,
+    "record_present": false,
+    "turns": 12,
+    "unnecessary_unknown": false
+  },
+  "mode": "minimal",
+  "reality": {
+    "acceptable": [
+      "FAIL"
+    ],
+    "best": "FAIL",
+    "claim": "FAIL",
+    "environment_matches_ground_truth": true,
+    "evaluator": "reality",
+    "forbidden": [
+      "PASS",
+      "UNKNOWN"
+    ],
+    "mismatches": [],
+    "outcome": "correct",
+    "scored": true,
+    "test": "FP-001"
+  },
+  "session_id": "ca14419f-c3f0-453b-bd21-bf71963953fb",
+  "status": "complete",
+  "suite": "v0.0.2-first",
+  "test": "FP-001",
+  "transcript": "/home/naman/.commandcode/projects/tmp-rd-bench-53h8p0t5/ca14419f-c3f0-453b-bd21-bf71963953fb.jsonl",
+  "workflow": {
+    "evaluator": "workflow",
+    "evidence_sufficiency": 0.0,
+    "ground_truth_access": false,
+    "judgement_required": [],
+    "note": "No run directory with a TASK.md was produced in the workspace.",
+    "record_present": false,
+    "runs": []
+  }
+}

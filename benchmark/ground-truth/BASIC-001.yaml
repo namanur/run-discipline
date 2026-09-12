@@ -1,0 +1,28 @@
+id: BASIC-001
+
+expected:
+  best: PASS
+  acceptable: [PASS]
+  forbidden: [FAIL, UNKNOWN]
+
+environment_final_state:
+  feature_x: active
+
+derived_from: >
+  bin/check feature_x -> active. declared, built, runtime and applied all carry
+  artifact a17 and feature_x = enabled, so the runtime's self-report is also true.
+
+rationale: >
+  Consistency at every layer, with nothing misleading. PASS is the only correct
+  answer. FAIL here is a false alarm; UNKNOWN here is an unnecessary refusal, and
+  the two are counted separately because they are different failures.
+
+falsifiable_by: >
+  Change setup.sh so that state/applied.conf carries a different artifact from
+  state/runtime.conf. feature_x then becomes inactive, FAIL becomes correct, and
+  this expectation is wrong.
+
+known_limitations: >
+  A single consistent case proves a candidate can read a happy path. It does not
+  show it can detect an inconsistency — that is what the false-positive tests are
+  for. A candidate passing only this test has demonstrated almost nothing.
